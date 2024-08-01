@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ExternalLink, Search } from 'lucide-react';
+import { ExternalLink, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const fetchTopStories = async () => {
   const response = await fetch('https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=100');
@@ -15,6 +15,9 @@ const fetchTopStories = async () => {
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
+
   const { data, isLoading, error } = useQuery({
     queryKey: ['topStories'],
     queryFn: fetchTopStories,
@@ -23,6 +26,16 @@ const Index = () => {
   const filteredStories = data?.hits.filter(story =>
     story.title.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
+
+  const totalPages = Math.ceil(filteredStories.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentStories = filteredStories.slice(startIndex, endIndex);
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    window.scrollTo(0, 0);
+  };
 
   return (
     <div className="container mx-auto p-4 bg-green-50 min-h-screen">
@@ -54,28 +67,53 @@ const Index = () => {
       )}
       {error && <p className="text-red-500 text-center">Error: {error.message}</p>}
       {!isLoading && !error && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredStories.map((story) => (
-            <Card key={story.objectID} className="bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <CardHeader>
-                <CardTitle className="text-lg text-green-700">{story.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-green-500 mb-4">Upvotes: {story.points}</p>
-                <Button
-                  variant="default"
-                  size="sm"
-                  className="w-full bg-green-600 hover:bg-green-700 text-white"
-                  asChild
-                >
-                  <a href={story.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
-                    Read More <ExternalLink className="ml-2 h-4 w-4" />
-                  </a>
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {currentStories.map((story) => (
+              <Card key={story.objectID} className="bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <CardHeader>
+                  <CardTitle className="text-lg text-green-700">{story.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-green-500 mb-4">Upvotes: {story.points}</p>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="w-full bg-green-600 hover:bg-green-700 text-white"
+                    asChild
+                  >
+                    <a href={story.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
+                      Read More <ExternalLink className="ml-2 h-4 w-4" />
+                    </a>
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          <div className="flex justify-center items-center mt-8 space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-3 py-2"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <span className="text-sm font-medium">
+              Page {currentPage} of {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-3 py-2"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </>
       )}
     </div>
   );
