@@ -25,28 +25,28 @@ const Index = () => {
   ) || [];
 
   return (
-    <div className="container mx-auto p-4 bg-green-50 min-h-screen">
-      <h1 className="text-4xl font-bold mb-6 text-green-800 text-center">Top 100 Hacker News Stories</h1>
+    <div className="container mx-auto p-4 bg-blue-50 min-h-screen">
+      <h1 className="text-4xl font-bold mb-6 text-blue-800 text-center">Top 100 Hacker News Stories</h1>
       <div className="relative mb-6">
         <Input
           type="text"
           placeholder="Search stories..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10 pr-4 py-2 border-green-300 focus:border-green-500 focus:ring-green-500"
+          className="pl-10 pr-4 py-2 border-blue-300 focus:border-blue-500 focus:ring-blue-500"
         />
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-400" size={20} />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400" size={20} />
       </div>
       {isLoading && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(9)].map((_, index) => (
             <Card key={index} className="animate-pulse bg-white shadow-lg">
               <CardHeader>
-                <div className="h-6 bg-green-200 rounded w-3/4"></div>
+                <div className="h-6 bg-blue-200 rounded w-3/4"></div>
               </CardHeader>
               <CardContent>
-                <div className="h-4 bg-green-100 rounded w-1/4 mb-2"></div>
-                <div className="h-4 bg-green-100 rounded w-1/2"></div>
+                <div className="h-4 bg-blue-100 rounded w-1/4 mb-2"></div>
+                <div className="h-4 bg-blue-100 rounded w-1/2"></div>
               </CardContent>
             </Card>
           ))}
@@ -58,14 +58,14 @@ const Index = () => {
           {filteredStories.map((story) => (
             <Card key={story.objectID} className="bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardHeader>
-                <CardTitle className="text-lg text-green-700">{story.title}</CardTitle>
+                <CardTitle className="text-lg text-blue-700">{story.title}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-green-500 mb-4">Upvotes: {story.points}</p>
+                <p className="text-sm text-blue-500 mb-4">Upvotes: {story.points}</p>
                 <Button
                   variant="default"
                   size="sm"
-                  className="w-full bg-green-600 hover:bg-green-700 text-white"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                   asChild
                 >
                   <a href={story.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
